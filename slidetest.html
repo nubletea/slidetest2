@@ -105,30 +105,27 @@ function clone(){
 function slide(){
     SLIDER.style.transition='all .5s';
     if(SLIDER_IMG.length===slider.count){
-        SLIDER.style.transition='all .5s';
-        SLIDER.style.left=-1200*(SLIDER_IMG.length+1)+'px';
-        setTimeout(() => {
-            SLIDER.style.transition='none';
-            SLIDER.style.left="-1200px";
-            slider.count=1;
-        }, 500);
+        slider_button_call(BTN_LI[0]);
+        slide_call(-1200*(SLIDER_IMG.length+1)+'px',"-1200px",1);
     }else{
         slider.count+=1;
+        slider_button_call(BTN_LI[slider.count-1]);
         SLIDER.style.left=-1200*slider.count+'px';
     }
-    slider_button();
+    setTimeout(slide,3000);
 };
 function slider_button(){
-    if(slider.count>=SLIDER_IMG.length+1){
-    slider.for_class(BTN_LI);
-    BTN_LI[0].classList.add('active');
-    }else if(slider.count<=0){
-    slider.for_class(BTN_LI);
-    BTN_LI[BTN_LI.length-1].classList.add('active'); 
+    if(slider.count===SLIDER_IMG.length+1){
+    slider_button_call(BTN_LI[0]);
+    }else if(slider.count===0){
+    slider_button_call(BTN_LI[BTN_LI.length-1]);
     }else{
-    slider.for_class(BTN_LI);
-    BTN_LI[slider.count-1].classList.add('active');
+    slider_button_call(BTN_LI[slider.count-1]);
     };
+}
+function slider_button_call(name){
+    slider.for_class(BTN_LI);
+    name.classList.add('active');
 }
 //button
 function button(){
@@ -136,10 +133,8 @@ for(let i=0;i<BTN_LI.length;i++){
     BTN_LI[i].onclick=function(){
         SLIDER.style.transition='all .5s';
         slider.count=1+slider.arr.indexOf(this);
-        slider.for_class(BTN_LI);
-        this.classList.add('active');
+        slider_button_call(this);
         SLIDER.style.left=-1200*(slider.count)+'px';
-        console.log(slider.count);
     }
 }
 };
@@ -150,29 +145,26 @@ function arrows(step){
     let pos = count + step;
     SLIDER.style.transition='all .5s';
 //next
-    if(limit <= pos-1){
-        SLIDER.style.transition='all .5s';
-        SLIDER.style.left=-1200*limit+'px';
-        setTimeout(() => {
-            SLIDER.style.transition='none';
-            SLIDER.style.left="-1200px";
-            slider.count=1;
-        }, 500);
-    }
+if(limit <= pos-1){
+    slide_call(-1200*limit+'px',"-1200px",1);
+};
 //prev
   if(pos <= 0){
-    SLIDER.style.transition='all .5s';
-    SLIDER.style.left='-1200px';
-    setTimeout(() => {
-            SLIDER.style.transition='none';
-            SLIDER.style.left=-1200*limit+'px';
-            slider.count=limit;
-        }, 500);
-  }
+    slide_call('-1200px',-1200*limit+'px',limit);
+};
     slider.count=pos;
     slider_button();
     SLIDER.style.left=-1200*pos+'px';
 };
+function slide_call(arow_left,set_left,arow_count){
+SLIDER.style.transition='all .5s';
+        SLIDER.style.left=arow_left;
+        setTimeout(() => {
+            SLIDER.style.transition='none';
+            SLIDER.style.left=set_left;
+            slider.count=arow_count;
+        }, 500);
+}
 window.onload={
     slide_w:SLIDER.style.width=1200*(1+SLIDER_IMG.length)+'px',
     slider_go:slide(),
